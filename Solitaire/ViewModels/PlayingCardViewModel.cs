@@ -7,7 +7,7 @@ namespace Solitaire.ViewModels
     /// The Playing Card represents a Card played in a game - so as
     /// well as the card type it also has the face down property etc.
     /// </summary>
-    public class PlayingCard : ViewModel
+    public class PlayingCardViewModel : ViewModel
     {
         #region Private Fields
 
@@ -46,7 +46,6 @@ namespace Solitaire.ViewModels
         /// <summary>
         /// Gets the card suit.
         /// </summary> 
-        /// <value>The card suit.</value>
         public CardSuit Suit
         {
             get

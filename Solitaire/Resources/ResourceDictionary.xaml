@@ -13,7 +13,7 @@
     <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
 
     <!-- The playing card data template. -->
-    <DataTemplate DataType="{x:Type viewModels:PlayingCard}">
+    <DataTemplate DataType="{x:Type viewModels:PlayingCardViewModel}">
         <Border Width="140"
                 Height="190"
                 Cursor="Hand"

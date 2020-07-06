@@ -19,7 +19,7 @@ namespace Solitaire
         /// <summary>
         /// Temporary storage for cards being dragged.
         /// </summary>
-        private List<PlayingCard> _draggingCards;
+        private List<PlayingCardViewModel> _draggingCards;
 
         private readonly MainWindowViewModel _viewModel;
 
@@ -38,7 +38,7 @@ namespace Solitaire
         private void Instance_DragAndDropEnd(object sender, DragAndDropEventArgs args)
         {
             var itemsControl = (ItemsControl)args.DragSource;
-            var playingCards = (ObservableCollection<PlayingCard>)itemsControl.ItemsSource;
+            var playingCards = (ObservableCollection<PlayingCardViewModel>)itemsControl.ItemsSource;
 
             //  We've put cards temporarily in the drag stack, put them in the 
             //  source stack again.                
@@ -51,8 +51,8 @@ namespace Solitaire
             if (args.DropTarget != null)
             {
                 var dropTarget = (ItemsControl)args.DropTarget;
-                var dragPayingCards = (ObservableCollection<PlayingCard>)dropTarget.ItemsSource;
-                var dragPlayingCard = (PlayingCard)args.DragData;
+                var dragPayingCards = (ObservableCollection<PlayingCardViewModel>)dropTarget.ItemsSource;
+                var dragPlayingCard = (PlayingCardViewModel)args.DragData;
 
                 //  Move the card.
                 _viewModel.MoveCard(playingCards, dragPayingCards, dragPlayingCard, false);
@@ -68,7 +68,7 @@ namespace Solitaire
         {
             //  The data should be a playing card.
 
-            if (!(args.DragData is PlayingCard card) || card.IsPlayable == false)
+            if (!(args.DragData is PlayingCardViewModel card) || card.IsPlayable == false)
             {
                 args.Allow = false;
 
@@ -80,7 +80,7 @@ namespace Solitaire
             //  If the card is draggable, we're going to want to drag the whole stack.
             var cards = _viewModel.GetCardCollection(card);
 
-            _draggingCards = new List<PlayingCard>();
+            _draggingCards = new List<PlayingCardViewModel>();
 
             var start = cards.IndexOf(card);
 
@@ -97,7 +97,7 @@ namespace Solitaire
             args.DragAdorner = new VisualAdorner(DragStack);
 
             var sourceStack = (ItemsControl)args.DragSource;
-            var playingCards = (ObservableCollection<PlayingCard>)sourceStack.ItemsSource;
+            var playingCards = (ObservableCollection<PlayingCardViewModel>)sourceStack.ItemsSource;
 
             //  Hide each dragging card.
             foreach (var dragCard in _draggingCards)

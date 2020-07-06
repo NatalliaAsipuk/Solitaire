@@ -12,8 +12,8 @@ namespace Solitaire.ViewModels
     public class MainWindowViewModel : CardGameViewModel
     {
         //  For ease of access we have arrays of the foundations and tableaus.
-        private readonly List<ObservableCollection<PlayingCard>> _foundations = new List<ObservableCollection<PlayingCard>>();
-        private readonly List<ObservableCollection<PlayingCard>> _tableaus = new List<ObservableCollection<PlayingCard>>();
+        private readonly List<ObservableCollection<PlayingCardViewModel>> _foundations = new List<ObservableCollection<PlayingCardViewModel>>();
+        private readonly List<ObservableCollection<PlayingCardViewModel>> _tableaus = new List<ObservableCollection<PlayingCardViewModel>>();
 
         public MainWindowViewModel()
         {
@@ -35,31 +35,31 @@ namespace Solitaire.ViewModels
             TurnStockCommand = new Command(DoTurnStock);
         }
 
-        public ObservableCollection<PlayingCard> Foundation1 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Foundation2 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Foundation3 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Foundation3 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Foundation4 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Foundation4 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau1 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau2 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau3 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau4 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau5 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau6 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Tableau7 { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Stock { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Stock { get; } = new ObservableCollection<PlayingCardViewModel>();
 
-        public ObservableCollection<PlayingCard> Waste { get; } = new ObservableCollection<PlayingCard>();
+        public ObservableCollection<PlayingCardViewModel> Waste { get; } = new ObservableCollection<PlayingCardViewModel>();
 
         /// <summary>
         /// Gets the turn stock command.
@@ -69,26 +69,26 @@ namespace Solitaire.ViewModels
         /// <summary>
         /// Gets the card collection for the specified card.
         /// </summary>
-        /// <param name="card">The card.</param>
+        /// <param name="cardViewModel">The card.</param>
         /// <returns></returns>
-        public IList<PlayingCard> GetCardCollection(PlayingCard card)
+        public IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel cardViewModel)
         {
-            if (Stock.Contains(card))
+            if (Stock.Contains(cardViewModel))
             {
                 return Stock;
             }
 
-            if (Waste.Contains(card))
+            if (Waste.Contains(cardViewModel))
             {
                 return Waste;
             }
 
-            foreach (var foundation in _foundations.Where(foundation => foundation.Contains(card)))
+            foreach (var foundation in _foundations.Where(foundation => foundation.Contains(cardViewModel)))
             {
                 return foundation;
             }
 
-            return _tableaus.FirstOrDefault(tableau => tableau.Contains(card));
+            return _tableaus.FirstOrDefault(tableau => tableau.Contains(cardViewModel));
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Solitaire.ViewModels
             var eachCardType = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToList();
 
             //  Create a playing card from each card type.
-            var playingCards = eachCardType.Select(cardType => new PlayingCard
+            var playingCards = eachCardType.Select(cardType => new PlayingCardViewModel
             {
                 CardType = cardType,
                 IsFaceDown = true
@@ -247,14 +247,14 @@ namespace Solitaire.ViewModels
         /// <summary>
         /// Tries the move the card to its appropriate foundation.
         /// </summary>
-        /// <param name="card">The card.</param>
+        /// <param name="cardViewModel">The card.</param>
         /// <returns>True if card moved.</returns>
-        public bool TryMoveCardToAppropriateFoundation(PlayingCard card)
+        public bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel cardViewModel)
         {
             //  Try the top of the waste first.
-            if (Waste.LastOrDefault() == card)
+            if (Waste.LastOrDefault() == cardViewModel)
             {
-                if (_foundations.Any(foundation => MoveCard(Waste, foundation, card, false)))
+                if (_foundations.Any(foundation => MoveCard(Waste, foundation, cardViewModel, false)))
                 {
                     return true;
                 }
@@ -266,7 +266,7 @@ namespace Solitaire.ViewModels
 
             for (; i < _tableaus.Count && inTableau == false; i++)
             {
-                inTableau = _tableaus[i].Contains(card);
+                inTableau = _tableaus[i].Contains(cardViewModel);
             }
 
             //  It's if its not in a tablea and it's not the top
@@ -277,7 +277,7 @@ namespace Solitaire.ViewModels
             }
 
             //  Try and move to each foundation.
-            return _foundations.Any(foundation => MoveCard(_tableaus[i - 1], foundation, card, false));
+            return _foundations.Any(foundation => MoveCard(_tableaus[i - 1], foundation, cardViewModel, false));
         }
 
         /// <summary>
@@ -285,13 +285,13 @@ namespace Solitaire.ViewModels
         /// </summary>
         /// <param name="from">The set we're moving from.</param>
         /// <param name="to">The set we're moving to.</param>
-        /// <param name="card">The card we're moving.</param>
+        /// <param name="cardViewModel">The card we're moving.</param>
         /// <param name="checkOnly">if set to <c>true</c> we only check if we CAN move, but don't actually move.</param>
         /// <returns>True if a card was moved.</returns>
         public bool MoveCard(
-            ObservableCollection<PlayingCard> from,
-            ObservableCollection<PlayingCard> to,
-            PlayingCard card, bool checkOnly)
+            ObservableCollection<PlayingCardViewModel> from,
+            ObservableCollection<PlayingCardViewModel> to,
+            PlayingCardViewModel cardViewModel, bool checkOnly)
         {
             //  The trivial case is where from and to are the same.
             if (from == to)
@@ -308,8 +308,8 @@ namespace Solitaire.ViewModels
                     //  We can move to a foundation only if:
                     //  1. It is empty and we are an ace.
                     //  2. It is card SN and we are suit S and Number N+1
-                    if ((to.Count != 0 || card.Value != 0) &&
-                        (to.Count <= 0 || to.Last().Suit != card.Suit || to.Last().Value != card.Value - 1))
+                    if ((to.Count != 0 || cardViewModel.Value != 0) &&
+                        (to.Count <= 0 || to.Last().Suit != cardViewModel.Suit || to.Last().Value != cardViewModel.Value - 1))
                     {
                         return false;
                     }
@@ -320,8 +320,8 @@ namespace Solitaire.ViewModels
                     //  We can move to a tableau only if:
                     //  1. It is empty and we are a king.
                     //  2. It is card CN and we are color !C and Number N-1
-                    if ((to.Count != 0 || card.Value != 12) &&
-                        (to.Count <= 0 || to.Last().Colour == card.Colour || to.Last().Value != card.Value + 1))
+                    if ((to.Count != 0 || cardViewModel.Value != 12) &&
+                        (to.Count <= 0 || to.Last().Colour == cardViewModel.Colour || to.Last().Value != cardViewModel.Value + 1))
                     {
                         return false;
                     }
@@ -341,8 +341,8 @@ namespace Solitaire.ViewModels
                     //  We can move to a foundation only if:
                     //  1. It is empty and we are an ace.
                     //  2. It is card SN and we are suit S and Number N+1
-                    if ((to.Count != 0 || card.Value != 0) &&
-                        (to.Count <= 0 || to.Last().Suit != card.Suit || to.Last().Value != card.Value - 1))
+                    if ((to.Count != 0 || cardViewModel.Value != 0) &&
+                        (to.Count <= 0 || to.Last().Suit != cardViewModel.Suit || to.Last().Value != cardViewModel.Value - 1))
                     {
                         return false;
                     }
@@ -353,8 +353,8 @@ namespace Solitaire.ViewModels
                     //  We can move to a tableau only if:
                     //  1. It is empty and we are a king.
                     //  2. It is card CN and we are color !C and Number N-1
-                    if ((to.Count != 0 || card.Value != 12) &&
-                        (to.Count <= 0 || to.Last().Colour == card.Colour || to.Last().Value != card.Value + 1))
+                    if ((to.Count != 0 || cardViewModel.Value != 12) &&
+                        (to.Count <= 0 || to.Last().Colour == cardViewModel.Colour || to.Last().Value != cardViewModel.Value + 1))
                     {
                         return false;
                     }
@@ -374,8 +374,8 @@ namespace Solitaire.ViewModels
                     //  We can move to a tableau only if:
                     //  1. It is empty and we are a king.
                     //  2. It is card CN and we are color !C and Number N-1
-                    if ((to.Count != 0 || card.Value != 12) &&
-                        (to.Count <= 0 || to.Last().Colour == card.Colour || to.Last().Value != card.Value + 1))
+                    if ((to.Count != 0 || cardViewModel.Value != 12) &&
+                        (to.Count <= 0 || to.Last().Colour == cardViewModel.Colour || to.Last().Value != cardViewModel.Value + 1))
                     {
                         return false;
                     }
@@ -410,7 +410,7 @@ namespace Solitaire.ViewModels
 
             //  If we've got here we've passed all tests
             //  and move the card and update the score.
-            DoMoveCard(from, to, card);
+            DoMoveCard(from, to, cardViewModel);
 
             //  If we have moved from the waste, we must 
             //  make sure that the top of the waste is playable.
@@ -430,16 +430,16 @@ namespace Solitaire.ViewModels
         /// </summary>
         /// <param name="from">The stack to move from.</param>
         /// <param name="to">The stack to move to.</param>
-        /// <param name="card">The card.</param>
+        /// <param name="cardViewModel">The card.</param>
         private void DoMoveCard(
-            ObservableCollection<PlayingCard> from,
-            ObservableCollection<PlayingCard> to,
-            PlayingCard card)
+            ObservableCollection<PlayingCardViewModel> from,
+            ObservableCollection<PlayingCardViewModel> to,
+            PlayingCardViewModel cardViewModel)
         {
             //  Indentify the run of cards we're moving.
-            var run = new List<PlayingCard>();
+            var run = new List<PlayingCardViewModel>();
 
-            for (var i = from.IndexOf(card); i < from.Count; i++)
+            for (var i = from.IndexOf(cardViewModel); i < from.Count; i++)
             {
                 run.Add(from[i]);
             }
@@ -491,7 +491,7 @@ namespace Solitaire.ViewModels
             base.RightClickCardCommandExecute(parameter);
 
             //  Cast the card.
-            if (!(parameter is PlayingCard card))
+            if (!(parameter is PlayingCardViewModel card))
             {
                 return;
             }

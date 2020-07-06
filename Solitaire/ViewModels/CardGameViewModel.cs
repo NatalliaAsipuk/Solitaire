@@ -25,7 +25,7 @@ namespace Solitaire.ViewModels
             NewGameCommand = new Command(NewGameCommandExecute);
         }
 
-        #region Public Preperties
+        #region Public Properties
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is game won.
